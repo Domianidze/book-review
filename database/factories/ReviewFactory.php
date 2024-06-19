@@ -14,12 +14,27 @@ class ReviewFactory extends Factory
      *
      * @return array<string, mixed>
      */
-    public function definition(Array $ratingBetween = [0, 5], String $book_created_at = '-6 months' ): array
+    public function definition()
     {
         return [
-           'review' => fake()->paragraph,
-           'rating' => fake()->numberBetween($ratingBetween[0], $ratingBetween[1]),
-           'created_at' => fake()->dateTimeBetween($book_created_at),
+            'review' => fake()->paragraph,
+            'rating' => fake()->numberBetween(0, 5),
+            'created_at' => fake()->dateTimeBetween('-6 months'),
         ];
+    }
+    public function ratingBetween(array $value)
+    {
+        return $this->state(
+            [
+                'rating' => fake()->numberBetween($value[0], $value[1]),
+            ]
+        );
+    }
+
+    public function bookCreatedAt(String $value)
+    {
+        return $this->state([
+            'created_at' => fake()->dateTimeBetween($value),
+        ]);
     }
 }

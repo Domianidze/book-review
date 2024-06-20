@@ -17,9 +17,9 @@ class BookFactory extends Factory
     public function definition(): array
     {
         return [
-            'title' => fake()->sentence,
-            'author' => fake()->name,
-            'created_at' => fake()->dateTimeBetween('-6 months')
+            'title' => $this->faker->sentence,
+            'author' => $this->faker->name,
+            'created_at' => $this->faker->dateTimeBetween('-6 months')
         ];
     }
 }

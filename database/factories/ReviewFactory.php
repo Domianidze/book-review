@@ -17,16 +17,16 @@ class ReviewFactory extends Factory
     public function definition()
     {
         return [
-            'review' => fake()->paragraph,
-            'rating' => fake()->numberBetween(0, 5),
-            'created_at' => fake()->dateTimeBetween('-6 months'),
+            'review' => $this->faker->paragraph,
+            'rating' => $this->faker->numberBetween(0, 5),
+            'created_at' => $this->faker->dateTimeBetween('-6 months'),
         ];
     }
     public function ratingBetween(array $value)
     {
         return $this->state(
             [
-                'rating' => fake()->numberBetween($value[0], $value[1]),
+                'rating' => $this->faker->numberBetween($value[0], $value[1]),
             ]
         );
     }
@@ -34,7 +34,7 @@ class ReviewFactory extends Factory
     public function bookCreatedAt(String $value)
     {
         return $this->state([
-            'created_at' => fake()->dateTimeBetween($value),
+            'created_at' => $this->faker->dateTimeBetween($value),
         ]);
     }
 }

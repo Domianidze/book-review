@@ -20,17 +20,26 @@ class Book extends Model
         return $query->where('title', 'LIKE', '%' . $value . '%');
     }
 
-    public function scopePopular(Builder $query)
+    public function scopePopular(Builder $query, string $fromDate = null)
     {
-        return $query->withCount('reviews')->orderByDesc('reviews_count');
+        return $query->withCount(['reviews' => self::dateFilter($fromDate)])->orderByDesc('reviews_count');
     }
 
-    public function scopeHighestRated(Builder $query, int $minReviews = null)
+    public function scopeHighestRated(Builder $query, int $minReviews = null, string $fromDate)
     {
         if ($minReviews) {
-            $query->withCount('reviews')->having('reviews_count', '>=', $minReviews);
+            $query->withCount(['reviews' => self::dateFilter($fromDate)])->having('reviews_count', '>=', $minReviews);
         }
 
-        return $query->withAvg('reviews', 'rating')->orderByDesc('reviews_avg_rating');
+        return $query->withAvg(['reviews' => self::dateFilter($fromDate)], 'rating')->orderByDesc('reviews_avg_rating');
+    }
+
+    private function dateFilter(string $fromDate = null)
+    {
+        return  function (Builder $query) use ($fromDate) {
+            if (!$fromDate) return;
+
+            return $query->where('created_at', '>=', $fromDate);
+        };
     }
 }

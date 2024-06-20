@@ -24,4 +24,13 @@ class Book extends Model
     {
         return $query->withCount('reviews')->orderByDesc('reviews_count');
     }
+
+    public function scopeHighestRated(Builder $query, int $minReviews = null)
+    {
+        if ($minReviews) {
+            $query->withCount('reviews')->having('reviews_count', '>=', $minReviews);
+        }
+
+        return $query->withAvg('reviews', 'rating')->orderByDesc('reviews_avg_rating');
+    }
 }

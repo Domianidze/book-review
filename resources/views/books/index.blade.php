@@ -5,9 +5,52 @@
 
 <form method="get" action="{{ route('books.index') }}" class="mb-4 flex items-center space-x-2">
   <input type="text" name="search" placeholder="Search by title" value="{{ request('search') }}" class="input h-10">
+  @foreach (request()->query() as $name => $value)
+  <input type="hidden" name="{{ $name }}" value="{{ $value }}" />
+  @endforeach
   <button class="btn h-10">Search</button>
-  <a href={{ route('books.index') }} class="btn h-10">Clear</a>
+  <a href="{{ route('books.index', request()->except('search')) }}" class="btn h-10">Clear</a>
 </form>
+
+<div class="filter-container mb-4 flex">
+  @php
+  $dateFormat = 'Y-m-d';
+
+  $filters = [
+  'Latest' => [
+  'filter' => null,
+  'fromDate' => null,
+  ],
+  'Popular Last Month' => [
+  'filter' => 'popular',
+  'fromDate' => now()->subMonth()->format($dateFormat),
+  ],
+  'Popular Last 6 Month' => [
+  'filter' => 'popular',
+  'fromDate' => now()->subMonths(6)->format($dateFormat),
+  ],
+  'Highest Rated Last Month' => [
+  'filter' => 'highest_rated',
+  'fromDate' => now()->subMonth()->format($dateFormat),
+  ],
+  'Highest Rated Last 6 Month' => [
+  'filter' => 'highest_rated',
+  'fromDate' => now()->subMonths(6)->format($dateFormat),
+  ]
+  ];
+  @endphp
+
+  @foreach ($filters as $label => $data)
+  @php
+  $href = route('books.index', [...request()->query(), ...$data]);
+  $isActive = $data['filter'] === request('filter') && $data['fromDate'] === request('fromDate');
+  @endphp
+
+  <a href="{{ $href }}" class="{{ $isActive ? 'filter-item-active' : 'filter-item' }}">
+    {{ $label }}
+  </a>
+  @endforeach
+</div>
 
 <ul>
   @forelse ($books as $book)
@@ -37,5 +80,5 @@
     </div>
   </li>
   @endforelse
-  </u>
-  @endsection
+</ul>
+@endsection

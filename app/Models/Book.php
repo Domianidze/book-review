@@ -27,7 +27,7 @@ class Book extends Model
         return $query->withCount(['reviews' => self::dateFilter($fromDate)])->orderByDesc('reviews_count');
     }
 
-    public function scopeHighestRated(Builder $query, int $minReviews = null, string $fromDate)
+    public function scopeHighestRated(Builder $query, int $minReviews = null, string $fromDate = null)
     {
         if ($minReviews) {
             $query->withCount(['reviews' => self::dateFilter($fromDate)])->having('reviews_count', '>=', $minReviews);

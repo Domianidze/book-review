@@ -12,7 +12,19 @@ class BookController extends Controller
      */
     public function index(Request $request)
     {
-        $books = Book::withAvg('reviews', 'rating')->withCount('reviews')->search($request->input('search'))->get();
+        $search = $request->input('search');
+        $filter = $request->input('filter');
+        $fromDate = $request->input('fromDate');
+
+        $books = Book::search($search);
+
+        match ($filter) {
+            'popular' => $books->popular($fromDate)->highestRated(null, $fromDate),
+            'highest_rated' => $books->highestRated(10, $fromDate)->popular($fromDate),
+            default => $books->withAvg('reviews', 'rating')->withCount('reviews')->latest(),
+        };
+
+        $books = $books->get();
 
         return view('books.index', compact('books'));
     }

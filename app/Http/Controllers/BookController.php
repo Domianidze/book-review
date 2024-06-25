@@ -20,11 +20,11 @@ class BookController extends Controller
 
         match ($filter) {
             'popular' => $books->popular($fromDate)->highestRated(null, $fromDate),
-            'highest_rated' => $books->highestRated(10, $fromDate)->popular($fromDate),
+            'highest_rated' => $books->highestRated(10, $fromDate)->orderByDesc('reviews_count'),
             default => $books->withAvg('reviews', 'rating')->withCount('reviews')->latest(),
         };
 
-        $books = $books->get();
+        $books = $books->paginate(10);
 
         return view('books.index', compact('books'));
     }

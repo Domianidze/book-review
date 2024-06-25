@@ -81,4 +81,8 @@
   </li>
   @endforelse
 </ul>
+
+<nav class="mt-4">
+  {{ $books->links() }}
+</nav>
 @endsection

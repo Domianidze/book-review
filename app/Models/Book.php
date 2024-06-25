@@ -15,8 +15,10 @@ class Book extends Model
         return $this->hasMany(Review::class);
     }
 
-    public function scopeSearch(Builder $query, string $value)
+    public function scopeSearch(Builder $query, string $value = null)
     {
+        if (!$value) return;
+
         return $query->where('title', 'LIKE', '%' . $value . '%');
     }
 

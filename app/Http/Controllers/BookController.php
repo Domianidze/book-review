@@ -48,9 +48,13 @@ class BookController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function show(Book $book)
     {
-        //
+        $book = $book->load([
+            'reviews' => fn ($query) => $query->latest()
+        ])->loadAvg('reviews', 'rating')->loadCount('reviews');
+
+        return view('books.show', compact('book'));
     }
 
     /**

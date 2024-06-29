@@ -24,7 +24,9 @@ class BookController extends Controller
             default => $books->withAvg('reviews', 'rating')->withCount('reviews')->latest(),
         };
 
-        $books = $books->paginate(10);
+        $queryString = $request->getQueryString();
+        $cacheKey = '/books' . ($queryString ? '?' . $queryString : '');
+        $books = cache()->remember($cacheKey, env('CACHE_DURATION'), fn () => $books->paginate(10));
 
         return view('books.index', compact('books'));
     }
@@ -50,9 +52,15 @@ class BookController extends Controller
      */
     public function show(Book $book)
     {
-        $book = $book->load([
-            'reviews' => fn ($query) => $query->latest()
-        ])->loadAvg('reviews', 'rating')->loadCount('reviews');
+        function loadBook(Book $book)
+        {
+            return $book->load([
+                'reviews' => fn ($query) => $query->latest()
+            ])->loadAvg('reviews', 'rating')->loadCount('reviews');
+        };
+
+        $cacheKey = '/books' . '/' . $book->id;
+        $book = cache()->remember($cacheKey, env('CACHE_DURATION'), fn () => loadBook($book));
 
         return view('books.show', compact('book'));
     }

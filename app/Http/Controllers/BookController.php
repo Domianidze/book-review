@@ -26,7 +26,7 @@ class BookController extends Controller
 
         $queryString = $request->getQueryString();
         $cacheKey = '/books' . ($queryString ? '?' . $queryString : '');
-        $books = cache()->remember($cacheKey, env('CACHE_DURATION'), fn () => $books->paginate(10));
+        $books = cache()->remember($cacheKey, env('CACHE_DURATION'), fn () => $books->paginate(10)->withQueryString());
 
         return view('books.index', compact('books'));
     }

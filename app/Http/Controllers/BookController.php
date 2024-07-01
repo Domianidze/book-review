@@ -52,17 +52,18 @@ class BookController extends Controller
      */
     public function show(Book $book)
     {
-        function loadBook(Book $book)
+        function getData(Book $book)
         {
-            return $book->load([
-                'reviews' => fn ($query) => $query->latest()
-            ])->loadAvg('reviews', 'rating')->loadCount('reviews');
+            $book = $book->loadAvg('reviews', 'rating')->loadCount('reviews');
+            $reviews = $book->reviews()->latest()->paginate(10);
+
+            return compact('book', 'reviews');
         };
 
         $cacheKey = '/books' . '/' . $book->id;
-        $book = cache()->remember($cacheKey, env('CACHE_DURATION'), fn () => loadBook($book));
+        $data = cache()->remember($cacheKey, env('CACHE_DURATION'), fn () => getData($book));
 
-        return view('books.show', compact('book'));
+        return view('books.show', $data);
     }
 
     /**

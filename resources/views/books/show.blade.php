@@ -20,7 +20,7 @@
 <div>
   <h2 class="mb-4 text-xl font-semibold">Reviews</h2>
   <ul>
-    @forelse ($book->reviews as $review)
+    @forelse ($reviews as $review)
     <li class="book-item mb-4">
       <div>
         <div class="mb-2 flex items-center justify-between">
@@ -42,5 +42,9 @@
     </li>
     @endforelse
   </ul>
+
+  <nav class="mt-4">
+    {{ $reviews->links() }}
+  </nav>
 </div>
 @endsection

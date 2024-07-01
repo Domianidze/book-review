@@ -12,7 +12,7 @@ class Review extends Model
     use ClearsCache;
 
     protected $fillable = [
-        'reviews',
+        'review',
         'rating'
     ];
 

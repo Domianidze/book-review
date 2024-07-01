@@ -19,6 +19,23 @@
 
 <div>
   <h2 class="mb-4 text-xl font-semibold">Reviews</h2>
+  <form method="POST" action="{{ route('books.reviews.store', $book) }}" class="book-item mb-4">
+    @csrf
+    <div class="mb-2">
+      <textarea name="review" placeholder="Review" rows="3" @class(['input', '!border-red-500'=> $errors->has('review')])>{{ old('review') }}</textarea>
+      @error('review')
+      <p class="text-red-500">{{ $message }}</p>
+      @enderror
+    </div>
+    <select name="rating" class="input mb-2">
+      @for ($i = 5; $i > 0; $i--)
+      <option value="{{ $i }}" {{ $i == old('rating') ? 'selected' : '' }}>
+        {{$i}} Stars
+      </option>
+      @endfor
+    </select>
+    <button type="submit" class="btn mt-2 h-10">Add Review</button>
+  </form>
   <ul>
     @forelse ($reviews as $review)
     <li class="book-item mb-4">

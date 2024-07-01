@@ -11,6 +11,11 @@ class Review extends Model
     use HasFactory;
     use ClearsCache;
 
+    protected $fillable = [
+        'reviews',
+        'rating'
+    ];
+
     public function book()
     {
         return $this->belongsTo(Book::class);

@@ -70,10 +70,10 @@
 </head>
 
 <body class="container mx-auto mt-10 mb-10 max-w-3xl">
-  @if (session()->has('success'))
-  <div x-data="{open: true}" x-show="open" class="book-item relative mb-10 !bg-green-100 !ring-green-500">
-    <p class="text-lg font-bold">Success</p>
-    <p>{{ session('success') }}</p>
+  @if (session()->has('success') || session()->has('error'))
+  <div x-data="{open: true}" x-show="open" class="book-item relative mb-10 {{ session()->has('success') ? '!bg-green-100 !ring-green-500' : '!bg-red-100 !ring-red-500' }}">
+    <p class="text-lg font-bold">{{ session()->has('success') ?  'Success' : 'Error' }}</p>
+    <p>{{ session('success') ?: session('error') }}</p>
 
     <span @click="open = false" class="absolute top-0 bottom-0 right-0 p-4 cursor-pointer">
       <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="h-6 w-6">

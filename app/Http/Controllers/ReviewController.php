@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Book;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\RateLimiter;
 
 class ReviewController extends Controller
 {
@@ -33,9 +34,16 @@ class ReviewController extends Controller
             'rating' => 'integer|min:1|max:5|required',
         ]);
 
-        $book->reviews()->create($data);
+        $executed = RateLimiter::attempt(
+            'books.reviews.store:' . ($request->user()?->id ?: $request->ip()),
+            5,
+            function () use ($book, $data) {
+                $book->reviews()->create($data);
+            },
+            3600,
+        );
 
-        return redirect()->route('books.show', $book)->with('success', 'Review has been added successfully!');
+        return redirect()->route('books.show', $book)->with($executed ? 'success' : 'error', $executed ? 'Review has been added successfully!' : 'Hourly limit reached. Please try again later.');
     }
 
     /**
